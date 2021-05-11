@@ -6,5 +6,10 @@ master: master.cpp
 writer: writer.c
 	gcc -o writer writer.c -lm
 
+mastertest: master
+	./master
+test: master writer
+	./master & ./writer
+	
 clean:
 	rm master writer
