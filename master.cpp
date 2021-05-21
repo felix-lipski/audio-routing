@@ -3,6 +3,11 @@
 #include <queue>
 #include "portaudio.h"
 
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #define SAMPLE_RATE   (44100)
 #define FRAMES_PER_BUFFER  (512)
 
@@ -89,10 +94,13 @@ int main(void) {
                         &data));
     checkErr(Pa_StartStream( stream ));
 
+    char * fifo_name = "./master.pipe";
+    mkfifo(fifo_name, 0666);
+
     FILE * in;
     float x;
     while (1) {
-        in = fopen("master_pipe", "rb");
+        in = fopen("master.pipe", "rb");
         printf("yes in");
         if (in) {
             while (fread(&x, sizeof(x), 1, in) > 0) {

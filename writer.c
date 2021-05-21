@@ -12,7 +12,7 @@
 int main() {
     FILE * out;
 
-    out = fopen("master_pipe", "wb");
+    out = fopen("master.pipe", "wb");
 
     for (int i = 0; i < SAMPLE_RATE / 2; i++) {
         float x = sin(i * TWOPI / 128.0);
