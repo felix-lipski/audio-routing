@@ -1,16 +1,23 @@
+{ pkgs, nixpkgs }:
 let
-  pkgs = import <nixpkgs> { };
+  lib           = nixpkgs.lib;
 in
-with pkgs;
-stdenv.mkDerivation {
-  pname = "audio-routing";
-  version = "0.0.1";
+pkgs.pkgs.stdenv.mkDerivation rec {
+  pname       = "boilerplate";
+  version     = "0.0.0";
+  unpackPhase = ''
+    true
+    '';
+  buildInputs = (import ./build-inputs.nix) { inherit pkgs; };
 
-  buildInputs = [ portaudio alsaLib libjack2 ];
+  buildPhase  = ''
+    echo "example file" > foo.txt
+    '';
 
-# src = ./.;
-
-# buildPhase = '' '';
-
-# installPhase = '' '';
+  # Everything in the $out/ will be available in the package in the store
+  installPhase = ''
+    mkdir -p $out/bin
+    cp ${./README.md} $out/bin/README.md
+    cp foo.txt $out/bin/foo.txt
+    '';
 }
