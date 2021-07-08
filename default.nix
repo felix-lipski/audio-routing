@@ -3,21 +3,23 @@ let
   lib           = nixpkgs.lib;
 in
 pkgs.pkgs.stdenv.mkDerivation rec {
-  pname       = "boilerplate";
-  version     = "0.0.0";
+  pname       = "bmt-master-writer";
+  version     = "0.0.1";
   unpackPhase = ''
     true
     '';
   buildInputs = (import ./build-inputs.nix) { inherit pkgs; };
 
   buildPhase  = ''
-    echo "example file" > foo.txt
+    mkdir -p $out/bin
+	g++ -o master ${src/master.cpp} -lm -lrt -lasound -ljack -lpthread -lportaudio
+	gcc -o writer ${src/writer.c} -lm
     '';
 
-  # Everything in the $out/ will be available in the package in the store
   installPhase = ''
-    mkdir -p $out/bin
-    cp ${./README.md} $out/bin/README.md
-    cp foo.txt $out/bin/foo.txt
+    cp master $out/bin/master
+    cp writer $out/bin/writer
+    cp master $out/master
+    cp writer $out/writer
     '';
 }

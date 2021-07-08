@@ -1,3 +1,3 @@
 { pkgs ? import <nixpkgs> { } }:
 with pkgs;
-[ portaudio alsaLib libjack2 ]
+[ gcc portaudio alsaLib libjack2 ]
