@@ -3,8 +3,8 @@ let
   lib           = nixpkgs.lib;
 in
 pkgs.pkgs.stdenv.mkDerivation rec {
-  pname       = "bmt-master-writer";
-  version     = "0.0.1";
+  pname       = "bmt-sink";
+  version     = "0.0.2";
   unpackPhase = ''
     true
     '';
@@ -12,14 +12,12 @@ pkgs.pkgs.stdenv.mkDerivation rec {
 
   buildPhase  = ''
     mkdir -p $out/bin
-	g++ -o master ${src/master.cpp} -lm -lrt -lasound -ljack -lpthread -lportaudio
+	g++ -o sink ${src/master.cpp} -lm -lrt -lasound -ljack -lpthread -lportaudio -largtable3
 	gcc -o writer ${src/writer.c} -lm
     '';
 
   installPhase = ''
-    cp master $out/bin/master
-    cp writer $out/bin/writer
-    cp master $out/master
-    cp writer $out/writer
+    cp sink $out/bin/bmt-sink
+    cp writer $out/bin/bmt-test-writer
     '';
 }

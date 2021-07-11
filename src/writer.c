@@ -18,9 +18,22 @@ int main() {
         float x = sin(i * TWOPI / 128.0);
         fwrite(&x, sizeof(x), 1, out);
     }
-
-    for (int i = 0; i < SAMPLE_RATE * 2; i++) {
+    for (int i = 0; i < SAMPLE_RATE; i++) {
         float x = fmod(i / 128.0, 1.0);
+        fwrite(&x, sizeof(x), 1, out);
+    }
+
+    for (int i = 0; i < SAMPLE_RATE; i++) {
+        float x = 0.0;
+        fwrite(&x, sizeof(x), 1, out);
+    }
+
+    for (int i = 0; i < SAMPLE_RATE / 2; i++) {
+        double x = sin(i * TWOPI / 128.0);
+        fwrite(&x, sizeof(x), 1, out);
+    }
+    for (int i = 0; i < SAMPLE_RATE; i++) {
+        double x = fmod(i / 128.0, 1.0);
         fwrite(&x, sizeof(x), 1, out);
     }
 

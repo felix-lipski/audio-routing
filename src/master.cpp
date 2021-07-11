@@ -8,6 +8,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "argtable3.h"
+#include <string>
+
 #define SAMPLE_RATE   (44100)
 #define FRAMES_PER_BUFFER  (512)
 
@@ -55,8 +58,20 @@ static int patestCallback(const void*                     inputBuffer,
     return 0;
 }
 
-int main(void) {
+int main(int argc, char **argv) {
+
+    // OPTIONS
+    struct arg_str * in_type_arg = arg_str0("t", "input-type", "float", "");
+    in_type_arg->sval[0] = "float";
+    struct arg_end * end = arg_end(20);
+    void* argtable[] = {in_type_arg, end};
+    int nerrors = arg_parse(argc,argv,argtable);
+    std::string in_type = (std::string) in_type_arg->sval[0];
+
+    // INITIALIZE QUEUE
     std::queue<float> buffer;
+
+    // PUSH TEST MELODY
     for (int j=0; j < 2; j++) {
         for (unsigned long i=1; i < 2410; i++) { buffer.push( (float) sin( i / 16.0 )); }
         for (unsigned long i=1; i < 2410; i++) { buffer.push( 0.0 ); }
@@ -98,17 +113,31 @@ int main(void) {
     mkfifo(fifo_name, 0666);
 
     FILE * in;
-    float x;
-    while (1) {
-        in = fopen("master.pipe", "rb");
-        printf("yes in");
-        if (in) {
-            while (fread(&x, sizeof(x), 1, in) > 0) {
-                buffer.push(x);
+    if (in_type.compare((std::string) "float") == 0) {
+        float x;
+        while (1) {
+            in = fopen("master.pipe", "rb");
+            printf("yes in");
+            if (in) {
+                while (fread(&x, sizeof(x), 1, in) > 0) {
+                    buffer.push(x);
+                }
             }
+            fclose(in);
         }
-        fclose(in);
-    }
+    } else {
+        double x;
+        while (1) {
+            in = fopen("master.pipe", "rb");
+            printf("yes in");
+            if (in) {
+                while (fread(&x, sizeof(x), 1, in) > 0) {
+                    buffer.push((float) x);
+                }
+            }
+            fclose(in);
+        }
+    };
 
     checkErr(Pa_StopStream( stream ));
     checkErr(Pa_CloseStream( stream ));
