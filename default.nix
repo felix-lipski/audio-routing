@@ -4,7 +4,7 @@ let
 in
 pkgs.pkgs.stdenv.mkDerivation rec {
   pname       = "bmt-sink";
-  version     = "0.0.2";
+  version     = "0.0.3";
   unpackPhase = ''
     true
     '';
@@ -12,7 +12,7 @@ pkgs.pkgs.stdenv.mkDerivation rec {
 
   buildPhase  = ''
     mkdir -p $out/bin
-	g++ -o sink ${src/master.cpp} -lm -lrt -lasound -ljack -lpthread -lportaudio -largtable3
+	g++ -o sink ${src/sink.cpp} -lm -lrt -lasound -ljack -lpthread -lportaudio -largtable3
 	gcc -o writer ${src/writer.c} -lm
     '';
 

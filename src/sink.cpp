@@ -63,8 +63,10 @@ int main(int argc, char **argv) {
     // OPTIONS
     struct arg_str * in_type_arg = arg_str0("t", "input-type", "float", "");
     in_type_arg->sval[0] = "float";
+    struct arg_str * in_pipe_name_arg = arg_str0("p", "pipe-name", "sink.pipe", "");
+    in_pipe_name_arg->sval[0] = "sink.pipe";
     struct arg_end * end = arg_end(20);
-    void* argtable[] = {in_type_arg, end};
+    void* argtable[] = {in_type_arg, in_pipe_name_arg, end};
     int nerrors = arg_parse(argc,argv,argtable);
     std::string in_type = (std::string) in_type_arg->sval[0];
 
@@ -109,14 +111,14 @@ int main(int argc, char **argv) {
                         &data));
     checkErr(Pa_StartStream( stream ));
 
-    char * fifo_name = "./master.pipe";
+    char * fifo_name = (char *) in_pipe_name_arg->sval[0];
     mkfifo(fifo_name, 0666);
 
     FILE * in;
     if (in_type.compare((std::string) "float") == 0) {
         float x;
         while (1) {
-            in = fopen("master.pipe", "rb");
+            in = fopen(fifo_name, "rb");
             printf("yes in");
             if (in) {
                 while (fread(&x, sizeof(x), 1, in) > 0) {
@@ -128,7 +130,7 @@ int main(int argc, char **argv) {
     } else {
         double x;
         while (1) {
-            in = fopen("master.pipe", "rb");
+            in = fopen(fifo_name, "rb");
             printf("yes in");
             if (in) {
                 while (fread(&x, sizeof(x), 1, in) > 0) {

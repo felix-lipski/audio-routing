@@ -9,10 +9,13 @@
 #define TWOPI (3.14159 * 2)
 #define SAMPLE_RATE (44100)
 
-int main() {
+int main(int argc, char **argv) {
+    char * out_name = "sink.pipe";
+    if (argc > 1) { out_name = argv[1]; };
+
     FILE * out;
 
-    out = fopen("master.pipe", "wb");
+    out = fopen(out_name, "wb");
 
     for (int i = 0; i < SAMPLE_RATE / 2; i++) {
         float x = sin(i * TWOPI / 128.0);
